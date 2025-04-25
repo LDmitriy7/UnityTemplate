@@ -8,13 +8,14 @@
     <script src="/sdk.js"></script>
     <script>
         let ysdk;
+        let leaderboards;
 
         async function initYandexGames() {
             ysdk = await YaGames.init()
+            leaderboards = await ysdk.getLeaderboards()
             // window.player = await ysdk.getPlayer({scopes: true})
             // const data = await player.getData();
             // window.playerData = data.data ?? ""
-            // window.leaderboards = await ysdk.getLeaderboards()
             // window.isAdActive = false
             // window.isAdOpen = false
             // window.wasAdShown = false
@@ -27,15 +28,16 @@
         window.yandexGames = {
             getLang ()  {
                 return ysdk.environment.i18n.lang
+            },
+
+            async setLeaderboardScore(score) {
+                const canSet = await ysdk.isAvailableMethod("leaderboards.getLeaderboardPlayerEntry");
+                if (canSet) await leaderboards.setLeaderboardScore("default", score)
             }
         };
         
         // window.isPlatformYandex = window.YaGames !== undefined
         //
-        // window.setLeaderboardScore = async (score) => {
-        //     const canSet = await ysdk.isAvailableMethod("leaderboards.getLeaderboardPlayerEntry");
-        //     if (canSet) leaderboards.setLeaderboardScore("default", score)
-        // }
         //
         // window.showAd = () => {
         //     isAdActive = true
@@ -139,7 +141,7 @@
 
     async function init() {
         await Promise.all([initUnity(), yandexGamesPromise])
-        unityInstance.SendMessage('YandexGames', 'OnReady');
+        unityInstance.SendMessage('YandexGamesManager', 'OnJsReady');
     }
 
     const script = document.createElement("script");

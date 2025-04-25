@@ -1,73 +1,35 @@
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using UnityEngine;
 
-// TODO: load before scene
-
-public interface IYandexGames
+public static class YandexGames
 {
-    Task ReadyTask { get; }
-    string GetLang();
-}
+    private static YandexGamesManager _manager;
+    private static IYandexGamesStrategy _strategy;
 
-public class YandexGames : MonoBehaviour, IYandexGames
-{
-    public static YandexGames Instance { get; private set; }
-    
-    private readonly TaskCompletionSource<bool> _readyTcs = new();
-    private IStrategy _strategy;
-
-    public Task ReadyTask => _readyTcs.Task;
-    public string GetLang() => _strategy.GetLang();
-    
-    private void Awake()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Init()
     {
-        if (Instance == null)
-        {
-            Init();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+        CreateManager();
 
-    private void Init()
-    {
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
         if (Application.isEditor)
         {
-            _strategy = new MockStrategy();
-            OnReady();
+            _strategy = new MockYandexGamesStrategy();
+            _manager.OnJsReady();
         }
         else
         {
-            _strategy = new DefaultStrategy();
+            _strategy = new DefaultYandexGamesStrategy();
         }
     }
-    
-    // Called from js
-    private void OnReady()
+
+    private static void CreateManager()
     {
-        _readyTcs.SetResult(true);
+        var managerObject = new GameObject("YandexGamesManager");
+        Object.DontDestroyOnLoad(managerObject);
+        _manager = managerObject.AddComponent<YandexGamesManager>();
     }
-}
 
-internal interface IStrategy
-{
-    string GetLang();
-}
-
-internal class DefaultStrategy : IStrategy
-{
-    public string GetLang() => YandexGames_GetLang();
-
-    [DllImport("__Internal")]
-    private static extern string YandexGames_GetLang();
-}
-
-internal class MockStrategy : IStrategy
-{
-    public string GetLang() => "en";
+    public static Task ReadyTask => _manager.ReadyTask;
+    public static string GetLang() => _strategy.GetLang();
+    public static void SetLeaderboardScore(long score) => _strategy.SetLeaderboardScore(score);
 }
