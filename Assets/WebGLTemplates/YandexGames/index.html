@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+    <title>{{{ PRODUCT_NAME }}}</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/sdk.js"></script>
+    <script>
+        let ysdk;
+
+        async function initYandexGames() {
+            ysdk = await YaGames.init()
+            // window.player = await ysdk.getPlayer({scopes: true})
+            // const data = await player.getData();
+            // window.playerData = data.data ?? ""
+            // window.leaderboards = await ysdk.getLeaderboards()
+            // window.isAdActive = false
+            // window.isAdOpen = false
+            // window.wasAdShown = false
+            // window.playerId = player.getUniqueID()
+            // window.isYsdkReady = true
+            // showAd()
+            console.log("Yandex Games initialized")
+        }
+
+        window.yandexGames = {
+            getLang ()  {
+                return ysdk.environment.i18n.lang
+            }
+        };
+        
+        // window.isPlatformYandex = window.YaGames !== undefined
+        //
+        // window.setLeaderboardScore = async (score) => {
+        //     const canSet = await ysdk.isAvailableMethod("leaderboards.getLeaderboardPlayerEntry");
+        //     if (canSet) leaderboards.setLeaderboardScore("default", score)
+        // }
+        //
+        // window.showAd = () => {
+        //     isAdActive = true
+        //     ysdk.adv.showFullscreenAdv({
+        //         callbacks: {
+        //             onOpen: () => {
+        //                 isAdOpen = true
+        //             },
+        //             onClose: (wasShown) => {
+        //                 wasAdShown = wasShown
+        //                 isAdActive = false
+        //                 isAdOpen = false
+        //             },
+        //             onError: (error) => console.error(error)
+        //         }
+        //     })
+        // }
+        //
+        // window.showRewardedAd = () => {
+        //     isAdActive = true
+        //     wasAdShown = false
+        //     ysdk.adv.showRewardedVideo({
+        //         callbacks: {
+        //             onOpen: () => {
+        //                 isAdOpen = true
+        //             },
+        //             onRewarded: () => {
+        //                 wasAdShown = true
+        //             },
+        //             onClose: () => {
+        //                 isAdOpen = false
+        //                 isAdActive = false
+        //             },
+        //             onError: (e) => console.error(e)
+        //         }
+        //     })
+        // }
+        //
+        // window.getTime = () => Math.floor(ysdk.serverTime() / 1000)
+        //
+        // window.tryRequestFullscreen = () => {
+        //     const fullscreen = ysdk.screen.fullscreen;
+        //     if (fullscreen.status === fullscreen.STATUS_ON) return;
+        //     const shouldRequest = ysdk.deviceInfo.isMobile() || ysdk.deviceInfo.isTablet()
+        //     if (!shouldRequest) return;
+        //     fullscreen.request()
+        // }
+        //
+        // document.addEventListener('visibilitychange', () => tryRequestFullscreen())
+
+        let yandexGamesPromise = initYandexGames()
+    </script>
+</head>
+<body>
+<div id="unity-container">
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+        </div>
+    </div>
+</div>
+<script>
+    const container = document.querySelector("#unity-container");
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingBar = document.querySelector("#unity-loading-bar");
+    const progressBarFull = document.querySelector("#unity-progress-bar-full");
+
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+    const config = {
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "{{{ COMPANY_NAME }}}",
+        productName: "{{{ PRODUCT_NAME }}}",
+        productVersion: "{{{ PRODUCT_VERSION }}}",
+        autoSyncPersistentDataPath: true,
+    };
+
+    loadingBar.style.display = "block";
+
+    let unityPromise;
+    let unityInstance;
+
+    async function initUnity() {
+        try {
+            unityInstance = await createUnityInstance(canvas, config, updateProgressBar)
+            loadingBar.style.display = "none";
+            console.log("Unity initialized")
+        } catch (message) {
+            alert(message);
+        }
+    }
+
+    function updateProgressBar(progress) {
+        progressBarFull.style.width = `${progress * 100}%`;
+    }
+
+    async function init() {
+        await Promise.all([initUnity(), yandexGamesPromise])
+        unityInstance.SendMessage('YandexGames', 'OnReady');
+    }
+
+    const script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = init;
+    document.body.appendChild(script);
+</script>
+</body>
+</html>
