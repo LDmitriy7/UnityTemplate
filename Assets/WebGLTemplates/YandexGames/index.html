@@ -7,86 +7,122 @@
     <link rel="stylesheet" href="style.css">
     <script src="/sdk.js"></script>
     <script>
-        let ysdk;
-        let leaderboards;
+        let unityInstance
 
-        async function initYandexGames() {
-            ysdk = await YaGames.init()
-            leaderboards = await ysdk.getLeaderboards()
-            // window.player = await ysdk.getPlayer({scopes: true})
-            // const data = await player.getData();
-            // window.playerData = data.data ?? ""
-            // window.isAdActive = false
-            // window.isAdOpen = false
-            // window.wasAdShown = false
-            // window.playerId = player.getUniqueID()
-            // window.isYsdkReady = true
-            // showAd()
-            console.log("Yandex Games initialized")
+        function callUnityYandexGamesManagerMethod(name) {
+            unityInstance.SendMessage('YandexGamesManager', name)
         }
+    </script>
+    <script>
+        let ysdk
+        let leaderboards
+        let player
 
-        window.yandexGames = {
-            getLang ()  {
+        let playerData = {
+            _dataKey: "data",
+            value: "",
+
+            async load() {
+                const data = await player.getData()
+                this.value = data[this._dataKey] ?? ""
+            },
+
+            save(value) {
+                this.value = value
+                player.setData({[this._dataKey]: value}, true)
+            }
+        }
+        
+        let yandexGames = {
+            getLang() {
                 return ysdk.environment.i18n.lang
             },
 
             async setLeaderboardScore(score) {
-                const canSet = await ysdk.isAvailableMethod("leaderboards.getLeaderboardPlayerEntry");
+                const canSet = await ysdk.isAvailableMethod("leaderboards.getLeaderboardPlayerEntry")
                 if (canSet) await leaderboards.setLeaderboardScore("default", score)
+            },
+
+            onGameReady() {
+                ysdk.features.LoadingAPI.ready()
+            },
+
+            tryShowAd() {
+                ysdk.adv.showFullscreenAdv({
+                    callbacks: {
+                        onOpen: this._onAdOpen,
+                        onClose: this._onAdClose,
+                        onError: this._onAdError,
+                    }
+                })
+            },
+
+            tryShowRewardedAd() {
+                ysdk.adv.showRewardedVideo({
+                    callbacks: {
+                        onOpen: this._onAdOpen,
+                        onRewarded: this._onAdReward,
+                        onClose: this._onAdClose,
+                        onError: this._onAdError,
+                    }
+                })
+            },
+
+            shouldRequestFullscreen() {
+                return ysdk.deviceInfo.isMobile() || ysdk.deviceInfo.isTablet()
+            },
+
+            getTime() {
+                return ysdk.serverTime();
+            },
+
+            tryRequestFullscreen() {
+                const fullscreen = ysdk.screen.fullscreen
+                if (fullscreen.status === fullscreen.STATUS_ON) return
+                fullscreen.request()
+            },
+
+            savePlayerData(value) {
+                playerData.save(value)
+            },
+
+            getPlayerData() {
+                return playerData.value
+            },
+            
+            getPlayerId() {
+                return player.getUniqueID()
+            },
+
+            _onAdOpen() {
+                callUnityYandexGamesManagerMethod("Js_OnAdOpen")
+            },
+
+            _onAdClose() {
+                callUnityYandexGamesManagerMethod("Js_OnAdClose")
+            },
+
+            _onAdReward() {
+                callUnityYandexGamesManagerMethod("Js_OnAdReward")
+            },
+
+            _onAdError(error) {
+                console.error(error)
             }
-        };
-        
-        // window.isPlatformYandex = window.YaGames !== undefined
-        //
-        //
-        // window.showAd = () => {
-        //     isAdActive = true
-        //     ysdk.adv.showFullscreenAdv({
-        //         callbacks: {
-        //             onOpen: () => {
-        //                 isAdOpen = true
-        //             },
-        //             onClose: (wasShown) => {
-        //                 wasAdShown = wasShown
-        //                 isAdActive = false
-        //                 isAdOpen = false
-        //             },
-        //             onError: (error) => console.error(error)
-        //         }
-        //     })
-        // }
-        //
-        // window.showRewardedAd = () => {
-        //     isAdActive = true
-        //     wasAdShown = false
-        //     ysdk.adv.showRewardedVideo({
-        //         callbacks: {
-        //             onOpen: () => {
-        //                 isAdOpen = true
-        //             },
-        //             onRewarded: () => {
-        //                 wasAdShown = true
-        //             },
-        //             onClose: () => {
-        //                 isAdOpen = false
-        //                 isAdActive = false
-        //             },
-        //             onError: (e) => console.error(e)
-        //         }
-        //     })
-        // }
-        //
-        // window.getTime = () => Math.floor(ysdk.serverTime() / 1000)
-        //
-        // window.tryRequestFullscreen = () => {
-        //     const fullscreen = ysdk.screen.fullscreen;
-        //     if (fullscreen.status === fullscreen.STATUS_ON) return;
-        //     const shouldRequest = ysdk.deviceInfo.isMobile() || ysdk.deviceInfo.isTablet()
-        //     if (!shouldRequest) return;
-        //     fullscreen.request()
-        // }
-        //
-        // document.addEventListener('visibilitychange', () => tryRequestFullscreen())
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (yandexGames.shouldRequestFullscreen()) yandexGames.tryRequestFullscreen()
+        })
+
+        async function initYandexGames() {
+            ysdk = await YaGames.init()
+            yandexGames.tryShowAd()
+            leaderboards = await ysdk.getLeaderboards()
+            player = await ysdk.getPlayer({scopes: true})
+            await playerData.load()
+            console.log("Yandex Games initialized")
+        }
 
         let yandexGamesPromise = initYandexGames()
     </script>
@@ -102,13 +138,13 @@
     </div>
 </div>
 <script>
-    const container = document.querySelector("#unity-container");
-    const canvas = document.querySelector("#unity-canvas");
-    const loadingBar = document.querySelector("#unity-loading-bar");
-    const progressBarFull = document.querySelector("#unity-progress-bar-full");
+    const container = document.querySelector("#unity-container")
+    const canvas = document.querySelector("#unity-canvas")
+    const loadingBar = document.querySelector("#unity-loading-bar")
+    const progressBarFull = document.querySelector("#unity-progress-bar-full")
 
-    const buildUrl = "Build";
-    const loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+    const buildUrl = "Build"
+    const loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}"
     const config = {
         dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
         frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
@@ -118,36 +154,35 @@
         productName: "{{{ PRODUCT_NAME }}}",
         productVersion: "{{{ PRODUCT_VERSION }}}",
         autoSyncPersistentDataPath: true,
-    };
+    }
 
-    loadingBar.style.display = "block";
+    loadingBar.style.display = "block"
 
-    let unityPromise;
-    let unityInstance;
+    let unityPromise
 
     async function initUnity() {
         try {
             unityInstance = await createUnityInstance(canvas, config, updateProgressBar)
-            loadingBar.style.display = "none";
+            loadingBar.style.display = "none"
             console.log("Unity initialized")
         } catch (message) {
-            alert(message);
+            alert(message)
         }
     }
 
     function updateProgressBar(progress) {
-        progressBarFull.style.width = `${progress * 100}%`;
+        progressBarFull.style.width = `${progress * 100}%`
     }
 
     async function init() {
         await Promise.all([initUnity(), yandexGamesPromise])
-        unityInstance.SendMessage('YandexGamesManager', 'OnJsReady');
+        callUnityYandexGamesManagerMethod('Js_OnReady')
     }
 
-    const script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = init;
-    document.body.appendChild(script);
+    const script = document.createElement("script")
+    script.src = loaderUrl
+    script.onload = init
+    document.body.appendChild(script)
 </script>
 </body>
 </html>

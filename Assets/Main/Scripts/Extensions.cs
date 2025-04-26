@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public static class Extensions
@@ -17,5 +19,18 @@ public static class Extensions
         }
 
         transform.localPosition += translation;
+    }
+
+    public static Task Sleep(this MonoBehaviour behaviour, float duration)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        behaviour.StartCoroutine(SleepCoroutine(duration, tcs));
+        return tcs.Task;
+    }
+
+    private static IEnumerator SleepCoroutine(float seconds, TaskCompletionSource<bool> tcs)
+    {
+        yield return new WaitForSeconds(seconds);
+        tcs.SetResult(true);
     }
 }
