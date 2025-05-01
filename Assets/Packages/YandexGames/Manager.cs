@@ -15,53 +15,57 @@ internal class Manager : MonoBehaviour
 
     public Task TryShowAd(Action onOpen)
     {
-        if (_adShowTcs != null) throw new("Ad is already requested");
-        _adShowTcs = new();
+        BeforeAdShow();
         _onAdOpen = onOpen;
-        Js_TryShowAd();
+        YandexGames_TryShowAd();
         return _adShowTcs.Task;
     }
 
     public Task TryShowRewardedAd(Action onOpen, Action onReward)
     {
-        if (_adShowTcs != null) throw new("Ad is already requested");
-        _adShowTcs = new();
+        BeforeAdShow();
         _onAdOpen = onOpen;
         _onAdReward = onReward;
-        Js_TryShowRewardedAd();
+        YandexGames_TryShowRewardedAd();
         return _adShowTcs.Task;
     }
 
+    private void BeforeAdShow()
+    {
+        if (_adShowTcs != null) throw new("Ad is already requested");
+        _adShowTcs = new();
+    }
+
     [UsedImplicitly]
-    private void Js_OnReady()
+    private void OnReady()
     {
         _readyTcs.SetResult(true);
     }
 
     [UsedImplicitly]
-    private void Js_OnAdOpen()
+    private void OnAdOpen()
     {
         _onAdOpen?.Invoke();
-        _onAdOpen = null;
     }
 
     [UsedImplicitly]
-    private void Js_OnAdReward()
+    private void OnAdReward()
     {
         _onAdReward?.Invoke();
-        _onAdReward = null;
     }
 
     [UsedImplicitly]
-    private void Js_OnAdClose()
+    private void OnAdClose()
     {
         _adShowTcs?.SetResult(true);
         _adShowTcs = null;
+        _onAdOpen = null;
+        _onAdReward = null;
     }
 
     [DllImport("__Internal")]
-    private static extern void Js_TryShowAd();
+    private static extern void YandexGames_TryShowAd();
 
     [DllImport("__Internal")]
-    private static extern void Js_TryShowRewardedAd();
+    private static extern void YandexGames_TryShowRewardedAd();
 }
