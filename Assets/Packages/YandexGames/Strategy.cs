@@ -30,11 +30,11 @@ internal class DefaultStrategy : IStrategy
 
     public Task ReadyTask => _manager.ReadyTask;
 
-    public string GetLang() => Js_GetLang();
+    public string GetLang() => YandexGames_GetLang();
 
-    public void SetLeaderboardScore(long score) => Js_SetLeaderboardScore(score);
+    public void SetLeaderboardScore(long score) => YandexGames_SetLeaderboardScore(score);
 
-    public void OnGameReady() => Js_OnGameReady();
+    public void OnGameReady() => YandexGames_OnGameReady();
 
     public async Task TryShowAd(Action onOpen)
     {
@@ -46,44 +46,44 @@ internal class DefaultStrategy : IStrategy
         await _manager.TryShowRewardedAd(onOpen, onReward);
     }
 
-    public void TryRequestFullscreen() => Js_TryRequestFullscreen();
+    public void TryRequestFullscreen() => YandexGames_TryRequestFullscreen();
 
-    public bool ShouldRequestFullscreen() => Js_ShouldRequestFullscreen() == 1;
+    public bool ShouldRequestFullscreen() => YandexGames_ShouldRequestFullscreen() == 1;
 
-    public long GetTime() => (long)Js_GetTime();
+    public long GetTime() => (long)YandexGames_GetTime();
 
-    public void SavePlayerData(string data) => Js_SavePlayerData(data);
+    public void SavePlayerData(string data) => YandexGames_SavePlayerData(data);
 
-    public string GetPlayerData() => Js_GetPlayerData();
+    public string GetPlayerData() => YandexGames_GetPlayerData();
 
-    public string GetPlayerId() => Js_GetPlayerId();
-
-    [DllImport("__Internal")]
-    private static extern string Js_GetLang();
+    public string GetPlayerId() => YandexGames_GetPlayerId();
 
     [DllImport("__Internal")]
-    private static extern void Js_SetLeaderboardScore(long score);
+    private static extern string YandexGames_GetLang();
 
     [DllImport("__Internal")]
-    private static extern void Js_OnGameReady();
+    private static extern void YandexGames_SetLeaderboardScore(double score);
 
     [DllImport("__Internal")]
-    private static extern void Js_TryRequestFullscreen();
+    private static extern void YandexGames_OnGameReady();
 
     [DllImport("__Internal")]
-    private static extern int Js_ShouldRequestFullscreen();
+    private static extern void YandexGames_TryRequestFullscreen();
 
     [DllImport("__Internal")]
-    private static extern double Js_GetTime();
+    private static extern int YandexGames_ShouldRequestFullscreen();
 
     [DllImport("__Internal")]
-    private static extern void Js_SavePlayerData(string data);
+    private static extern double YandexGames_GetTime();
 
     [DllImport("__Internal")]
-    private static extern string Js_GetPlayerData();
+    private static extern void YandexGames_SavePlayerData(string data);
 
     [DllImport("__Internal")]
-    private static extern string Js_GetPlayerId();
+    private static extern string YandexGames_GetPlayerData();
+
+    [DllImport("__Internal")]
+    private static extern string YandexGames_GetPlayerId();
 }
 
 internal class MockStrategy : IStrategy

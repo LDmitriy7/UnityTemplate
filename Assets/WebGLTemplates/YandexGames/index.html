@@ -5,7 +5,55 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
     <title>{{{ PRODUCT_NAME }}}</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () {
+                (m[i].a = m[i].a || []).push(arguments)
+            };
+            m[i].l = 1 * new Date();
+            for (let j = 0; j < document.scripts.length; j++) {
+                if (document.scripts[j].src === r) {
+                    return;
+                }
+            }
+            k = e.createElement(t)
+            a = e.getElementsByTagName(t)[0]
+            k.async = 1
+            k.src = r
+            a.parentNode.insertBefore(k, a)
+        })
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+        
+        const metrikaId = 0; // TODO
+        
+        ym(metrikaId, "init", {
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true
+        });
+    </script>
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/101484895" style="position:absolute; left:-9999px;" alt=""/></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
+
+    <script>
+        const yandexMetrika = {
+            send(goal) {
+                ym(metrikaId, 'reachGoal', goal)
+                console.log(`[Yandex Metrika] Goal "${goal}" reached`)
+            }
+        }
+    </script>
+
+    <script>
+        yandexMetrika.send('loadStarted')
+    </script>
+
     <script src="/sdk.js"></script>
+
     <script>
         let unityInstance
 
@@ -13,6 +61,7 @@
             unityInstance.SendMessage('YandexGamesManager', name)
         }
     </script>
+
     <script>
         let ysdk
         let leaderboards
@@ -32,7 +81,7 @@
                 player.setData({[this._dataKey]: value}, true)
             }
         }
-        
+
         let yandexGames = {
             getLang() {
                 return ysdk.environment.i18n.lang
@@ -89,21 +138,21 @@
             getPlayerData() {
                 return playerData.value
             },
-            
+
             getPlayerId() {
                 return player.getUniqueID()
             },
 
             _onAdOpen() {
-                callUnityYandexGamesManagerMethod("Js_OnAdOpen")
+                callUnityYandexGamesManagerMethod("OnAdOpen")
             },
 
             _onAdClose() {
-                callUnityYandexGamesManagerMethod("Js_OnAdClose")
+                callUnityYandexGamesManagerMethod("OnAdClose")
             },
 
             _onAdReward() {
-                callUnityYandexGamesManagerMethod("Js_OnAdReward")
+                callUnityYandexGamesManagerMethod("OnAdReward")
             },
 
             _onAdError(error) {
@@ -117,11 +166,10 @@
 
         async function initYandexGames() {
             ysdk = await YaGames.init()
-            yandexGames.tryShowAd()
+            // yandexGames.tryShowAd()
             leaderboards = await ysdk.getLeaderboards()
             player = await ysdk.getPlayer({scopes: true})
             await playerData.load()
-            console.log("Yandex Games initialized")
         }
 
         let yandexGamesPromise = initYandexGames()
@@ -164,7 +212,6 @@
         try {
             unityInstance = await createUnityInstance(canvas, config, updateProgressBar)
             loadingBar.style.display = "none"
-            console.log("Unity initialized")
         } catch (message) {
             alert(message)
         }
@@ -176,7 +223,8 @@
 
     async function init() {
         await Promise.all([initUnity(), yandexGamesPromise])
-        callUnityYandexGamesManagerMethod('Js_OnReady')
+        callUnityYandexGamesManagerMethod('OnReady')
+        yandexMetrika.send('loadFinished')
     }
 
     const script = document.createElement("script")
