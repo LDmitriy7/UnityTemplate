@@ -17,8 +17,17 @@ public class Player : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0))
         {
-            Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+            Shoot();
         }
+    }
+
+    void Shoot()
+    {
+        var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var direction = mousePos - transform.position;
+        var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        var rotation = Quaternion.Euler(0, 0, angle);
+        Instantiate(projectilePrefab, transform.position, rotation);
     }
 
     void Jump()
