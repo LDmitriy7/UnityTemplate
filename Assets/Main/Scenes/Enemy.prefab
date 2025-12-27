@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1143381325365795206, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}
       propertyPath: m_Name
-      value: Enemy Variant
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 5950322263411868141, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -77,9 +77,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c4e30b62facd14f8f459731a9cbed2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 5
+  health: 500
   spriteRenderer: {fileID: 4810900148088452872}
   flashDuration: 0.1
+  squashDuration: 0.1
+  squashFactor: 1.2
 --- !u!212 &4810900148088452872 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 8554666141251125951, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}
