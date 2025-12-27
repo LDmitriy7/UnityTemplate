@@ -145,6 +145,18 @@ MonoBehaviour:
   projectilePrefab: {fileID: 2398089188649157108, guid: 7ac8f030acbdbe84eb39435e0ac117a6, type: 3}
   speed: 7
   jumpForce: 13
+  square: {fileID: 4732848}
+--- !u!114 &4732848 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3899505173249690724, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}
+  m_PrefabInstance: {fileID: 339851002525917879}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4732838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 457aa06f2b50f3e4eb95ea343c12c7ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &141790240
 PrefabInstance:
   m_ObjectHideFlags: 0

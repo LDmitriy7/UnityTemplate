@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private float speed = 6;
     [SerializeField] private float jumpForce = 13;
+    [SerializeField] private Square square;
     private bool _canJump = false;
     private const string groundTag = "Ground";
 
@@ -30,6 +31,7 @@ public class Player : MonoBehaviour
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         var rotation = Quaternion.Euler(0, 0, angle);
         Instantiate(projectilePrefab, transform.position, rotation);
+        square.Squash();
     }
 
     void Jump()
