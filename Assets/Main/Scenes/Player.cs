@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float speed = 6;
     [SerializeField] private float jumpForce = 13;
     [SerializeField] private Square square;
+    [SerializeField] private ParticleSystem jumpEffect;
     private bool _canJump = false;
     private const string groundTag = "Ground";
 
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
     void Jump()
     {
         body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        jumpEffect.Play();
     }
 
     void OnCollisionEnter2D(Collision2D collision)

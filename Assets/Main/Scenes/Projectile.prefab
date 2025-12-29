@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 038f0b81499434e4d91e5662f5813b2d, type: 3}
-  m_Color: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+  m_Color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -149,3 +149,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   lifetime: 2
+  effectPrefab: {fileID: 7990700992354323804, guid: 1256e620c88629f45938b162c1f8b990, type: 3}

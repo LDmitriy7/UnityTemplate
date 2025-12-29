@@ -4,6 +4,7 @@ public class Projectile : MonoBehaviour
 {
     [SerializeField] private float speed = 10f;
     [SerializeField] private float lifetime = 2f;
+    [SerializeField] private GameObject effectPrefab;
     private float _startTime;
 
     void Start()
@@ -25,6 +26,7 @@ public class Projectile : MonoBehaviour
         if (collision.gameObject.TryGetComponent<Enemy>(out var enemy))
         {
             enemy.TakeDamage();
+            Instantiate(effectPrefab, transform.position, transform.rotation);
             Destroy(gameObject);
         }
     }
