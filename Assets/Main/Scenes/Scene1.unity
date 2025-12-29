@@ -143,7 +143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 4732842}
   projectilePrefab: {fileID: 2398089188649157108, guid: 7ac8f030acbdbe84eb39435e0ac117a6, type: 3}
-  speed: 7
+  speed: 8
   jumpForce: 13
   square: {fileID: 4732848}
   jumpEffect: {fileID: 1213487309}
