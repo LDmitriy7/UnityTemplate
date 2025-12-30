@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private float flashDuration = 0.1f;
     [SerializeField] private Square square;
+    [SerializeField] private GameObject deathEffectPrefab;
     private Coroutine _flashCoroutine;
     private Color _originalcolor;
 
@@ -20,7 +21,12 @@ public class Enemy : MonoBehaviour
         health--;
         Flash();
         square.Squash();
-        if (health <= 0) Destroy(gameObject);
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+            var effect = Instantiate(deathEffectPrefab);
+            effect.transform.position = transform.position;
+        }
     }
 
     public void Flash()
