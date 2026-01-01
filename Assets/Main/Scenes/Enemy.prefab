@@ -71,6 +71,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 457aa06f2b50f3e4eb95ea343c12c7ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!50 &1271640073640330901 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 2728691392346960674, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}
+  m_PrefabInstance: {fileID: 3781765527357781431}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4298013991395142705 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1143381325365795206, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}
@@ -93,6 +98,7 @@ MonoBehaviour:
   flashDuration: 0.1
   square: {fileID: 172919087924705747}
   deathEffectPrefab: {fileID: 6422890384820657364, guid: 16bc9221189814e4a853eb0b17e955be, type: 3}
+  body: {fileID: 1271640073640330901}
 --- !u!212 &4810900148088452872 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 8554666141251125951, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}

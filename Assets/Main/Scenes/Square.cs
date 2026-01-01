@@ -5,6 +5,7 @@ public class Square : MonoBehaviour
 {
     [SerializeField] private float squashDuration = 0.1f;
     [SerializeField] private float squashFactor = 1.2f;
+    [SerializeField] private Rigidbody2D body;
     private Vector3 _originalScale;
     private Coroutine _squashCoroutine;
 
@@ -17,6 +18,11 @@ public class Square : MonoBehaviour
     {
         if (_squashCoroutine != null) StopCoroutine(_squashCoroutine);
         _squashCoroutine = StartCoroutine(SquashCoroutine());
+    }
+
+    public void Knockback(Vector2 direction, float force)
+    {
+        body.AddForce(direction * force, ForceMode2D.Impulse);
     }
 
     private IEnumerator SquashCoroutine()

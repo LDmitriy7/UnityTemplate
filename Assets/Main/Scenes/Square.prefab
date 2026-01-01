@@ -177,3 +177,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   squashDuration: 0.1
   squashFactor: 1.2
+  body: {fileID: 2728691392346960674}

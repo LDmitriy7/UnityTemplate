@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float flashDuration = 0.1f;
     [SerializeField] private Square square;
     [SerializeField] private GameObject deathEffectPrefab;
+    [SerializeField] private Rigidbody2D body;
     private Coroutine _flashCoroutine;
     private Color _originalcolor;
 
@@ -27,6 +28,11 @@ public class Enemy : MonoBehaviour
             var effect = Instantiate(deathEffectPrefab);
             effect.transform.position = transform.position;
         }
+    }
+
+    public void Knockback(Vector2 direction, float force)
+    {
+        square.Knockback(direction, force);
     }
 
     public void Flash()
