@@ -6,31 +6,26 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float lifetime = 2f;
     [SerializeField] private GameObject effectPrefab;
     [SerializeField] private float knockbackForce = 1f;
-    private float _startTime;
+    [SerializeField] private Rigidbody2D body;
 
     void Start()
     {
-        _startTime = Time.time;
-    }
-
-    void Update()
-    {
-        transform.Translate(speed * Time.deltaTime * Vector2.right);
-        if (Time.time - _startTime >= lifetime)
-        {
-            Destroy(gameObject);
-        }
+        body.linearVelocity = transform.right * speed;
+        Destroy(gameObject, lifetime);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        // TODO: hit not only Enemy
+        if (collision.gameObject.TryGetComponent<Player>(out var player))
+        {
+            return;
+        }
         if (collision.gameObject.TryGetComponent<Enemy>(out var enemy))
         {
             enemy.TakeDamage();
             enemy.Knockback(transform.right, knockbackForce);
-            Instantiate(effectPrefab, transform.position, transform.rotation);
-            Destroy(gameObject);
         }
+        Instantiate(effectPrefab, transform.position, transform.rotation);
+        Destroy(gameObject);
     }
 }
