@@ -5496,12 +5496,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4775882005f79a49b4c48f6d49c0411, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorFlashEnabled: 0
-  squashEnabled: 0
-  particlesEnabled: 0
-  knockbackEnabled: 0
-  cameraShakeEnabled: 0
-  soundsEnabled: 0
+  colorFlashEnabled: 1
+  squashEnabled: 1
+  particlesEnabled: 1
+  knockbackEnabled: 1
+  cameraShakeEnabled: 1
+  soundsEnabled: 1
 --- !u!4 &1560233335
 Transform:
   m_ObjectHideFlags: 0
