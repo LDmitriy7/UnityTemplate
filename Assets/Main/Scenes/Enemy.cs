@@ -9,6 +9,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Square square;
     [SerializeField] private GameObject deathEffectPrefab;
     [SerializeField] private Rigidbody2D body;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private float pitch1;
     private Coroutine _flashCoroutine;
     private Color _originalcolor;
 
@@ -20,13 +22,18 @@ public class Enemy : MonoBehaviour
     public void TakeDamage()
     {
         health--;
-        Flash();
-        square.Squash();
+        if (EffectsSettings.Instance.colorFlashEnabled) Flash();
+        if (EffectsSettings.Instance.squashEnabled) square.Squash();
         if (health <= 0)
         {
+            if (EffectsSettings.Instance.soundsEnabled)
+                SoundSystem.Instance.Play(deathSound, pitch1);
             Destroy(gameObject);
-            var effect = Instantiate(deathEffectPrefab);
-            effect.transform.position = transform.position;
+            if (EffectsSettings.Instance.particlesEnabled)
+            {
+                var effect = Instantiate(deathEffectPrefab);
+                effect.transform.position = transform.position;
+            }
         }
     }
 

@@ -99,6 +99,8 @@ MonoBehaviour:
   square: {fileID: 172919087924705747}
   deathEffectPrefab: {fileID: 6422890384820657364, guid: 16bc9221189814e4a853eb0b17e955be, type: 3}
   body: {fileID: 1271640073640330901}
+  deathSound: {fileID: 8300000, guid: c5607b57edcb62747bdd7fb956886324, type: 3}
+  pitch1: 1.3
 --- !u!212 &5787570959985019357 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 7217601874969263210, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}
