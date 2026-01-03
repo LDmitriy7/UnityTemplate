@@ -149,9 +149,6 @@ MonoBehaviour:
   recoilForce: 5
   square: {fileID: 4732848}
   jumpEffect: {fileID: 1213487309}
-  cameraSystem: {fileID: 1213469290}
-  shakeIntensity1: 0.1
-  shakeDuration1: 0.1
 --- !u!114 &4732848 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3899505173249690724, guid: 9da40f354eaf1cc4b9d7b1016b084ac6, type: 3}
