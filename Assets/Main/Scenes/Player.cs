@@ -64,11 +64,13 @@ public class Player : MonoBehaviour
         jumpEffect.Play();
     }
 
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag(groundTag))
         {
             _canJump = true;
+            // cameraSystem.Shake(shakeIntensity, shakeDuration);
         }
     }
 

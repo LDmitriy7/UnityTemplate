@@ -7,6 +7,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] private GameObject effectPrefab;
     [SerializeField] private float knockbackForce = 1f;
     [SerializeField] private Rigidbody2D body;
+    [SerializeField] private float shakeIntensity1 = 0.1f;
+    [SerializeField] private float shakeDuration1 = 0.1f;
 
     void Start()
     {
@@ -25,6 +27,7 @@ public class Projectile : MonoBehaviour
             enemy.TakeDamage();
             enemy.Knockback(transform.right, knockbackForce);
         }
+        CameraSystem.Instance.Shake(shakeIntensity1, shakeDuration1);
         Instantiate(effectPrefab, transform.position, transform.rotation);
         Destroy(gameObject);
     }
