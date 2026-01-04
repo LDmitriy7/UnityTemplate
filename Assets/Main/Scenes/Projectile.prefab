@@ -132,6 +132,8 @@ MonoBehaviour:
   maxVolume1: 0.3
   minPitch1: 1
   maxPitch1: 1.3
+  hitStopDuration: 0.04
+  hitStopTimeScale: 0.1
 --- !u!1 &7051420638676414418
 GameObject:
   m_ObjectHideFlags: 0

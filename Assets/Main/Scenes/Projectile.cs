@@ -14,6 +14,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float maxVolume1 = 1f;
     [SerializeField] private float minPitch1 = 1f;
     [SerializeField] private float maxPitch1 = 1f;
+    [SerializeField] private float hitStopDuration = 0.1f;
+    [SerializeField] private float hitStopTimeScale = 0f;
 
     void Start()
     {
@@ -31,6 +33,10 @@ public class Projectile : MonoBehaviour
         {
             enemy.TakeDamage();
             if (EffectsSettings.Instance.knockbackEnabled) enemy.Knockback(transform.right, knockbackForce);
+            if (EffectsSettings.Instance.hitStopEnabled)
+            {
+                TimeScaleManager.Instance.HitStop(hitStopDuration, hitStopTimeScale);
+            }
         }
         if (EffectsSettings.Instance.cameraShakeEnabled)
         {

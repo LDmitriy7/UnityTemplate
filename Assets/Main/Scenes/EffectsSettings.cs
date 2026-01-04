@@ -10,6 +10,7 @@ public class EffectsSettings : MonoBehaviour
   public bool knockbackEnabled = true;
   public bool cameraShakeEnabled = true;
   public bool soundsEnabled = true;
+  public bool hitStopEnabled = true;
 
   private void Awake()
   {
