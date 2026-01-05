@@ -133,7 +133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 665693184}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GroundGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -478,7 +478,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &1552563355
 BoxCollider2D:
@@ -542,6 +542,11 @@ MonoBehaviour:
   moveForce: 50
   maxSpeed: 10
   friction: 5
+  jumpForce: 10
+  groundCheckDistance: 1.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1894272685
 GameObject:
   m_ObjectHideFlags: 0
