@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float maxSpeed = 10f;
     [SerializeField] float friction = 5f;
     [SerializeField] float jumpForce = 10f;
+    [SerializeField] float fallGravityMultiplier = 2f;
     [SerializeField] Vector2 groundCheckOffset = new(0f, -1f);
     [SerializeField] Vector2 groundCheckSize = new(0.9f, 0.2f);
     [SerializeField] LayerMask groundLayer;
@@ -14,7 +15,13 @@ public class PlayerController : MonoBehaviour
     private float _currentInput;
     private float _jumpBufferTimer;
     private bool _isGrounded;
+    private float _defaultGravityScale;
     private const float InputThreshold = 0.01f;
+
+    void Awake()
+    {
+        _defaultGravityScale = body.gravityScale;
+    }
 
     void Update()
     {
@@ -32,6 +39,15 @@ public class PlayerController : MonoBehaviour
         Move();
         ApplyFriction();
         ClampSpeed();
+
+        if (body.linearVelocity.y < 0f)
+        {
+            body.gravityScale = _defaultGravityScale * fallGravityMultiplier;
+        }
+        else
+        {
+            body.gravityScale = _defaultGravityScale;
+        }
 
         if (_jumpBufferTimer > 0f && _isGrounded)
         {
