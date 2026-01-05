@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
         ApplyFriction();
         ClampSpeed();
 
-        if (body.linearVelocity.y < 0f)
+        if (body.linearVelocity.y < 0f || !Input.GetKey(KeyCode.Space)) // TODO
         {
             body.gravityScale = _defaultGravityScale * fallGravityMultiplier;
         }
