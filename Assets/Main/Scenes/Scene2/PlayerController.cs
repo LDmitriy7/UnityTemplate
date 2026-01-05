@@ -10,18 +10,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector2 groundCheckOffset = new(0f, -1f);
     [SerializeField] Vector2 groundCheckSize = new(0.9f, 0.2f);
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] float jumpBufferDuration = 0.1f;
     private float _currentInput;
-    private bool _jumpRequested;
+    [SerializeField] private float _jumpBufferTimer;
     private bool _isGrounded;
     private const float InputThreshold = 0.01f;
 
     void Update()
     {
         _currentInput = Input.GetAxisRaw("Horizontal");
-
+        _jumpBufferTimer -= Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            _jumpRequested = true;
+            _jumpBufferTimer = jumpBufferDuration;
         }
     }
 
@@ -32,13 +33,10 @@ public class PlayerController : MonoBehaviour
         ApplyFriction();
         ClampSpeed();
 
-        if (_jumpRequested)
+        if (_jumpBufferTimer > 0f && _isGrounded)
         {
-            if (_isGrounded)
-            {
-                Jump();
-            }
-            _jumpRequested = false;
+            Jump();
+            _jumpBufferTimer = 0f;
         }
     }
 
@@ -80,12 +78,13 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        var origin = (Vector2)transform.position + groundCheckOffset;
-        _isGrounded = Physics2D.BoxCast(origin, groundCheckSize, 0f, Vector2.down, 0f, groundLayer);
+        var point = (Vector2)transform.position + groundCheckOffset;
+        _isGrounded = Physics2D.OverlapBox(point, groundCheckSize, 0f, groundLayer);
     }
 
     private void Jump()
     {
+        body.linearVelocityY = 0f;
         body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 }

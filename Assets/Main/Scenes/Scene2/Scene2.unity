@@ -477,7 +477,7 @@ Rigidbody2D:
     serializedVersion: 2
     m_Bits: 0
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &1552563355
@@ -543,7 +543,8 @@ MonoBehaviour:
   maxSpeed: 10
   friction: 5
   jumpForce: 10
-  groundCheckDistance: 1.1
+  groundCheckOffset: {x: 0, y: -1}
+  groundCheckSize: {x: 0.9, y: 0.2}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
