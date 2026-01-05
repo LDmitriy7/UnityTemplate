@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float jumpBufferDuration = 0.1f;
     private float _currentInput;
-    [SerializeField] private float _jumpBufferTimer;
+    private float _jumpBufferTimer;
     private bool _isGrounded;
     private const float InputThreshold = 0.01f;
 
