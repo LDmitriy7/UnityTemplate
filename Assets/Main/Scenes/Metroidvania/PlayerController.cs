@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] Rigidbody2D body;
@@ -12,11 +13,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector2 groundCheckSize = new(0.9f, 0.2f);
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float jumpBufferDuration = 0.1f;
+    [SerializeField] float jumpCutMultiplier = 0.5f;
     private float _currentInput;
     private float _jumpBufferTimer;
     private bool _isGrounded;
     private float _defaultGravityScale;
     private const float InputThreshold = 0.01f;
+    private const KeyCode JumpKey = KeyCode.Space;
+    [SerializeField] private bool _isJumping;
 
     void Awake()
     {
@@ -27,9 +31,13 @@ public class PlayerController : MonoBehaviour
     {
         _currentInput = Input.GetAxisRaw("Horizontal");
         _jumpBufferTimer -= Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(JumpKey))
         {
             _jumpBufferTimer = jumpBufferDuration;
+        }
+        if (Input.GetKeyUp(JumpKey))
+        {
+            _isJumping = false;
         }
     }
 
@@ -39,21 +47,15 @@ public class PlayerController : MonoBehaviour
         Move();
         ApplyFriction();
         ClampSpeed();
-
-        if (body.linearVelocity.y < 0f || !Input.GetKey(KeyCode.Space)) // TODO
-        {
-            body.gravityScale = _defaultGravityScale * fallGravityMultiplier;
-        }
-        else
-        {
-            body.gravityScale = _defaultGravityScale;
-        }
-
         if (_jumpBufferTimer > 0f && _isGrounded)
         {
             Jump();
-            _jumpBufferTimer = 0f;
         }
+        if (_isGrounded && body.linearVelocity.y <= 0f)
+        {
+            _isJumping = false;
+        }
+        UpdateGravity();
     }
 
     private void OnDrawGizmos()
@@ -61,6 +63,22 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = _isGrounded ? Color.green : Color.red;
         var boxCenter = (Vector2)transform.position + groundCheckOffset;
         Gizmos.DrawWireCube(boxCenter, groundCheckSize);
+    }
+
+    private void UpdateGravity()
+    {
+        if (body.linearVelocity.y < 0f)
+        {
+            body.gravityScale = _defaultGravityScale * fallGravityMultiplier;
+        }
+        else if (body.linearVelocity.y > 0f && !_isJumping)
+        {
+            body.linearVelocityY *= jumpCutMultiplier;
+        }
+        else
+        {
+            body.gravityScale = _defaultGravityScale;
+        }
     }
 
     private void Move()
@@ -100,7 +118,8 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        body.linearVelocityY = 0f;
-        body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        body.linearVelocityY = jumpForce;
+        _isJumping = true;
+        _jumpBufferTimer = 0f;
     }
 }
