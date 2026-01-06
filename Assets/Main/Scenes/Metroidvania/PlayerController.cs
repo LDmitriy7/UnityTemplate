@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] Rigidbody2D body;
